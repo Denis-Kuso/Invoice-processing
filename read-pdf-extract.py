@@ -3,12 +3,11 @@ sys.path.append('/Users/deniskusic/miniconda3/lib/python3.8/site-packages')
 import pdfplumber as pdfP
 import os
 from datetime import datetime
+# use this link for further manipulation https://www.youtube.com/watch?v=syEfR1QIGcY
 
-
-pathname1 = '/Users/deniskusic/Documents/Personal/Deliveroo/invocies/'
-filename1 = '2020-12-04_06.pdf'
-src = pathname1 + 'invocies1/'
-total = 0
+wd = os.getcwd()
+src = '/Users/deniskusic/Documents/Personal/Deliveroo/Invoices/Raw-invoices-for-processing/'
+#total = 0
 all_files = os.listdir(src)
 list_of_failed_files = []
 
@@ -29,24 +28,25 @@ def extract_total_and_date(PDFtext):
     PDFtext_list = PDFtext.split('\n')
     return (PDFtext_list[date],PDFtext_list[total])
 
-for file in os.listdir(src):
-    print(f'Filename:{file}')
-    # Extract text
-    PDF = extractTextFromPdf(src + file)
-    # Extract time window and earnings
-    name, earnings = extract_total_and_date(PDF)
-    # Rename file
+# for file in os.listdir(src):
+#     print(f'Filename:{file}')
+#     # Extract text
+#     PDF = extractTextFromPdf(src + file)
+#     # Extract time window and earnings
+#     name, earnings = extract_total_and_date(PDF)
+#     # Format earnings
+#     print(earnings)
+#     try:
+#         total += float(earnings[6:].strip('£'))
+#         os.rename(src + file,pathname1 + name + '.pdf')
+#     except ValueError:
+#         print(f'Failed on filename:\n{file}')# One file has two pages
+#         continue
+# print(total)
 
-    # Format earnings
-    print(earnings)
-    try:
-
-        total += float(earnings[6:].strip('£'))
-        os.rename(src + file,pathname1 + name + '.pdf')
-    except ValueError:
-        print(f'Failed on filename:\n{file}')# One file has two pages
-        continue
-print(total)
+def format_earnings(earnings, start_indx = 6):
+    f_earnings = float(earnings[start_indx:].strip('£')
+    return f_earnings
 
 ##src1 = pathname1
 ##total1 = 0
@@ -61,9 +61,20 @@ print(total)
 ##    print(f'Total = {total1}£')
 ##print('Total earned', round(total1, ndigits=2))
 
-    # use this link for further manipulation https://www.youtube.com/watch?v=syEfR1QIGcY
-def main():
-    # extract text from invoice
-    # Extract invoicing period and total money earned
-    # Rename file
-    # Tally up earnings from each file
+
+def main(all_files):
+    total = 0.0
+    for invoice in all_files:
+        if invoice[-3:] =='pdf':
+            # extract text from invoice
+            PDF = extractTextFromPdf(invoice)
+        else:
+            continue
+        # Extract invoicing period and total money earned
+        period, earnings = extract_total_and_date(PDF)
+        # Rename file
+        # Tally up earnings from each file
+        total += format_earnings(earnings)
+    print(f'Total money earned = {total}')
+
+main()
