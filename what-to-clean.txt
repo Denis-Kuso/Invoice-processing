@@ -1,0 +1,21 @@
+General:
+Remove redundant comments
+Remove unnecessary code
+
+In function extract_total_and_date:
+Rename arguments 'total' and 'date' to reflect that they are positions of total and date
+for that particular invoice.
+Then make these as default arguments of the function, instead of declaring them in the body of the function.
+
+In the main loop used for calculating the total money earned:
+Make it a function
+Create a list of files in src directory
+Check that file is pdf
+Add a list of failed files
+Add to list of failed files for failed files
+
+Reformat filename:
+Implement
+
+
+Write some tests
