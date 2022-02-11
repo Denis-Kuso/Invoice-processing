@@ -7,8 +7,11 @@ from datetime import datetime
 
 pathname1 = '/Users/deniskusic/Documents/Personal/Deliveroo/invocies/'
 filename1 = '2020-12-04_06.pdf'
-total = 0
 src = pathname1 + 'invocies1/'
+total = 0
+all_files = os.listdir(src)
+list_of_failed_files = []
+
 
 def extractTextFromPdf(filename,page_num = 0):
     """Takes filename and returns the text in that file as string
@@ -25,8 +28,6 @@ def extract_total_and_date(PDFtext):
     date = 4
     PDFtext_list = PDFtext.split('\n')
     return (PDFtext_list[date],PDFtext_list[total])
-
-
 
 for file in os.listdir(src):
     print(f'Filename:{file}')
@@ -61,3 +62,8 @@ print(total)
 ##print('Total earned', round(total1, ndigits=2))
 
     # use this link for further manipulation https://www.youtube.com/watch?v=syEfR1QIGcY
+def main():
+    # extract text from invoice
+    # Extract invoicing period and total money earned
+    # Rename file
+    # Tally up earnings from each file
