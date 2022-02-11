@@ -11,6 +11,11 @@ src = '/Users/deniskusic/Documents/Personal/Deliveroo/Invoices/Raw-invoices-for-
 all_files = os.listdir(src)
 list_of_failed_files = []
 
+if len(all_files) ==0:
+    print(f'Src dir {src}')
+    print('Empty directory.')
+    sys.exit(1)
+
 
 def extractTextFromPdf(filename,page_num = 0):
     """Takes filename and returns the text in that file as string
@@ -45,7 +50,7 @@ def extract_total_and_date(PDFtext):
 # print(total)
 
 def format_earnings(earnings, start_indx = 6):
-    f_earnings = float(earnings[start_indx:].strip('£')
+    f_earnings = float(earnings[start_indx:].strip('£'))
     return f_earnings
 
 ##src1 = pathname1
@@ -67,7 +72,7 @@ def main(all_files):
     for invoice in all_files:
         if invoice[-3:] =='pdf':
             # extract text from invoice
-            PDF = extractTextFromPdf(invoice)
+            PDF = extractTextFromPdf(src + invoice)
         else:
             continue
         # Extract invoicing period and total money earned
@@ -77,4 +82,4 @@ def main(all_files):
         total += format_earnings(earnings)
     print(f'Total money earned = {total}')
 
-main()
+main(all_files)
