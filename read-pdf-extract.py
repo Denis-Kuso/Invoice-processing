@@ -7,15 +7,13 @@ from datetime import datetime
 
 wd = os.getcwd()
 src = '/Users/deniskusic/Documents/Personal/Deliveroo/Invoices/Raw-invoices-for-processing/'
-#total = 0
 all_files = os.listdir(src)
 list_of_failed_files = []
 
-if len(all_files) ==0:
+if len(all_files) ==1:
     print(f'Src dir {src}')
     print('Empty directory.')
     sys.exit(1)
-
 
 def extractTextFromPdf(filename,page_num = 0):
     """Takes filename and returns the text in that file as string
@@ -28,10 +26,33 @@ returns entire text in the pdf; type string"""
     return text
 
 def extract_total_and_date(PDFtext):
+    """Write specs"""
     total = -2
     date = 4
     PDFtext_list = PDFtext.split('\n')
     return (PDFtext_list[date],PDFtext_list[total])
+
+def format_earnings(earnings, start_indx = 6):
+    """Write specs"""
+    f_earnings = float(earnings[start_indx:].strip('£'))
+    return f_earnings
+
+def main(all_files):
+    total = 0.0
+    for invoice in all_files:
+        if invoice[-3:] == 'pdf':
+            # extract text from invoice
+            PDF = extractTextFromPdf(src + invoice)
+        else:
+            continue
+        # Extract invoicing period and total money earned
+        period, earnings = extract_total_and_date(PDF)
+        # TODO Rename file
+        # Tally up earnings from each file
+        total += format_earnings(earnings)
+    print(f'Total money earned = {total}')
+
+main(all_files)
 
 # for file in os.listdir(src):
 #     print(f'Filename:{file}')
@@ -49,10 +70,6 @@ def extract_total_and_date(PDFtext):
 #         continue
 # print(total)
 
-def format_earnings(earnings, start_indx = 6):
-    f_earnings = float(earnings[start_indx:].strip('£'))
-    return f_earnings
-
 ##src1 = pathname1
 ##total1 = 0
 ##for file in os.listdir(src1):
@@ -65,21 +82,3 @@ def format_earnings(earnings, start_indx = 6):
 ##    total1 +=  float(earnings[6:].strip('£'))
 ##    print(f'Total = {total1}£')
 ##print('Total earned', round(total1, ndigits=2))
-
-
-def main(all_files):
-    total = 0.0
-    for invoice in all_files:
-        if invoice[-3:] =='pdf':
-            # extract text from invoice
-            PDF = extractTextFromPdf(src + invoice)
-        else:
-            continue
-        # Extract invoicing period and total money earned
-        period, earnings = extract_total_and_date(PDF)
-        # Rename file
-        # Tally up earnings from each file
-        total += format_earnings(earnings)
-    print(f'Total money earned = {total}')
-
-main(all_files)

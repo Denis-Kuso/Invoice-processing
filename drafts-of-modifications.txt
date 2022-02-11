@@ -1,0 +1,100 @@
+import sys
+sys.path.append('/Users/deniskusic/miniconda3/lib/python3.8/site-packages')
+import pdfplumber as pdfP
+import os
+from datetime import datetime
+
+
+pathname1 = '/Users/deniskusic/Documents/Personal/Deliveroo/invocies/'
+filename1 = '2020-12-04_06.pdf'
+src = pathname1 + 'invocies1/'
+all_files = os.listdir(src)
+list_of_failed_files = []
+
+def extractTextFromPdf(filename,page_num = 0):
+    """Takes filename and returns the text in that file as string
+Assumes filename is a string, absolute path to file, which is a pdf.
+returns entire text in the pdf; type string"""
+    # TODO improve specification
+    with pdfP.open(filename) as pdf:
+        page = pdf.pages[page_num]
+        text = page.extract_text()
+    return text
+
+def extract_total_and_date(PDFtext,index_of_total = -2, index_of_date = 4):
+    """Write specification"""
+    PDFtext_list = PDFtext.split('\n')
+    return (PDFtext_list[index_of_total],PDFtext_list[index_of_date])
+
+def get_total(invoice):
+    """Returns total, write specs"""
+    total = 0
+    start_indx = 6# digits for money start at this index
+    # Extract content of PDF
+    PDF = extractTextFromPdf(src + invoice)
+    # Extract time period and earnings
+    t_period, earnings = extract_total_and_date(PDF)
+
+    try:
+    #Extract total money earned 
+        total = float(earnings[start_indx:].strip('£'))
+    except ValueError:
+        print(f'Failed on filename:\n {invoice}')
+        list_of_failed_files.append(invoice)
+        continue
+    
+    return total
+def rename_files(src, dest_dir = 'Processed-invoices/'):
+    #
+    os.mkdir(dest_dir)
+    for file in all_files:
+        reformated_name = reformat_filename(file)
+        os.rename(src+file,src + dest_dir + reformated_name + '.pdf')
+        
+for file in all_files:
+    print(f'Filename:{file}')
+    # Extract text
+    PDF = extractTextFromPdf(src + file)
+    # Extract time window and earnings
+    name, earnings = extract_total_and_date(PDF)
+    # Rename file
+    
+    # Format earnings
+    print(earnings)
+    try:
+        # Format money earned
+        total += float(earnings[6:].strip('£'))
+        os.rename(src + file,pathname1 + name + '.pdf')
+    except ValueError:
+        print(f'Failed on filename:\n{file}')# One file has two pages
+        continue
+print(total)
+
+def reformat_filename(raw_string, format = 'ISO8601'):
+    #reformates filename according to format specified
+    # check that format is valid
+    
+    
+    return formated_string
+    
+
+##src1 = pathname1
+##total1 = 0
+##for file in os.listdir(src1):
+##    if file[-3:] == 'pdf':
+##        PDF = extractTextFromPdf(src1 + file)
+##    else:
+##        continue
+##    name, earnings = extract_total_and_date(PDF)
+##    print(f'Period:{name[30:]}; {earnings}')
+##    total1 +=  float(earnings[6:].strip('£'))
+##    print(f'Total = {total1}£')
+##print('Total earned', round(total1, ndigits=2))
+    
+    
+# TODO
+# Rename files--- to what format?
+
+# use this link for further manipulation https://www.youtube.com/watch?v=syEfR1QIGcY
+
+
