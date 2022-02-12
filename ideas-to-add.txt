@@ -1,3 +1,4 @@
 Sat 12 Feb 2022 11:43:10 GMT
 TO add functionality such that the src directory where invoices are to be searched for can be modified.
 Add functionality whether to rename the files and where to save them.
+ALERT, Deliveroo changed the format of their invoices, need to check whether the script still works with the new layout. Also need to correct when some invoices have 2 pages
