@@ -5,40 +5,51 @@ import os
 from datetime import datetime
 # use this link for further manipulation https://www.youtube.com/watch?v=syEfR1QIGcY
 
+# File information
 wd = os.getcwd()
 src = '/Users/deniskusic/Documents/Personal/Deliveroo/Invoices/Raw-invoices-for-processing/'
+dst = '/Users/deniskusic/Documents/Personal/Deliveroo/Invoices/Processed-invoices/'
 all_files = os.listdir(src)
 list_of_failed_files = []
 
-if len(all_files) ==1:
-    print(f'Src dir {src}')
-    print('Empty directory.')
-    sys.exit(1)
-
 def extractTextFromPdf(filename,page_num = 0):
-    """Takes filename and returns the text in that file as string
-Assumes filename is a string, absolute path to file, which is a pdf.
-returns entire text in the pdf; type string"""
-    # TODO improve specification
+    """
+    Takes filename and returns the text in that file.
+    Filename is of type str, representing the absolute path to file, which is a pdf.
+    Returns the entire text from the pdf file; type string
+    page_num of type int, represents the page number of the file to be parsed.
+    """
     with pdfP.open(filename) as pdf:
         page = pdf.pages[page_num]
         text = page.extract_text()
     return text
 
-def extract_total_and_date(PDFtext):
-    """Write specs"""
-    total = -2
-    date = 4
+def extract_total_and_date(PDFtext, indx_total=-2,indx_date=4):
+    """
+    Extracts the total money earned and invoicing period from PDFtext.
+    Return type(tuple)
+    PDFtext: type(str)
+    Tuple contains two values both of type str, total money and invoicing period.
+    """
     PDFtext_list = PDFtext.split('\n')
-    return (PDFtext_list[date],PDFtext_list[total])
+    return (PDFtext_list[indx_total],PDFtext_list[indx_date])
 
 def format_earnings(earnings, start_indx = 6):
-    """Write specs"""
+    """
+    Returns formated earnings stripping
+    redundant symbols and words.
+    Return type: float
+    Keyword arguments:
+    start_indx has type int is the index at which the number begins.
+    Positional arguments:
+    earnings has type string, always of form 'Total:£123.55'
+    """
     f_earnings = float(earnings[start_indx:].strip('£'))
     return f_earnings
 
 def main(all_files):
     total = 0.0
+    print(f'Searching for invoices in: {src}')
     for invoice in all_files:
         if invoice[-3:] == 'pdf':
             # extract text from invoice
@@ -46,39 +57,9 @@ def main(all_files):
         else:
             continue
         # Extract invoicing period and total money earned
-        period, earnings = extract_total_and_date(PDF)
-        # TODO Rename file
+        earnings, period = extract_total_and_date(PDF)
         # Tally up earnings from each file
         total += format_earnings(earnings)
-    print(f'Total money earned = {total}')
+    print(f'Total money earned = £{total}')
 
 main(all_files)
-
-# for file in os.listdir(src):
-#     print(f'Filename:{file}')
-#     # Extract text
-#     PDF = extractTextFromPdf(src + file)
-#     # Extract time window and earnings
-#     name, earnings = extract_total_and_date(PDF)
-#     # Format earnings
-#     print(earnings)
-#     try:
-#         total += float(earnings[6:].strip('£'))
-#         os.rename(src + file,pathname1 + name + '.pdf')
-#     except ValueError:
-#         print(f'Failed on filename:\n{file}')# One file has two pages
-#         continue
-# print(total)
-
-##src1 = pathname1
-##total1 = 0
-##for file in os.listdir(src1):
-##    if file[-3:] == 'pdf':
-##        PDF = extractTextFromPdf(src1 + file)
-##    else:
-##        continue
-##    name, earnings = extract_total_and_date(PDF)
-##    print(f'Period:{name[30:]}; {earnings}')
-##    total1 +=  float(earnings[6:].strip('£'))
-##    print(f'Total = {total1}£')
-##print('Total earned', round(total1, ndigits=2))

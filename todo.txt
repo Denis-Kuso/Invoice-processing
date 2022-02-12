@@ -1,0 +1,6 @@
+Sat 12 Feb 2022 09:59:15 GMT
+- Write specifications for functions DONE
+- Print default src destination DONE
+- Define default destination directory -DONE
+
+
