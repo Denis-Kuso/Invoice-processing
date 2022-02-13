@@ -19,9 +19,13 @@ def extractTextFromPdf(filename,page_num = 0):
     Returns the entire text from the pdf file; type string
     page_num of type int, represents the page number of the file to be parsed.
     """
-    with pdfP.open(filename) as pdf:
-        page = pdf.pages[page_num]
-        text = page.extract_text()
+    try:
+        with pdfP.open(filename) as pdf:
+            page = pdf.pages[page_num]
+            text = page.extract_text()
+    except FileNotFoundError:
+        print(f'File: {filename} not found')
+        sys.exit(1)
     return text
 
 def extract_total_and_date(PDFtext, indx_total=-2,indx_date=4):
