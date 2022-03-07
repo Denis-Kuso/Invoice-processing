@@ -4,10 +4,22 @@ from collections import namedtuple
 
 
 def extractTextFromPdf(filename:str)->str:
-    """
-    Takes filename and returns the text in that file.
-    Filename is of type str, representing the absolute path to file, which is a pdf.
-    Returns the entire text from the pdf file; type string
+    """Takes a pdf file and extracts text from that file.
+
+    Parameters
+    ----------
+    filename
+        Represents the string representation of the absolute pathname to the PDF file.
+    
+    Raises
+    ------
+    ValueError
+        If the filename doesn't not exist or is provided as relative pathname.
+
+    Returns
+    -------
+    str
+        String containing text from PDF file
     """
     text = ''
     try:
@@ -18,43 +30,60 @@ def extractTextFromPdf(filename:str)->str:
         raise ValueError(f"File:{filename} does not exist")
     return text
 
+
 def getProperSearchPattern(new_invoice:bool, phrase:str)->str:
+    """
+    Chooses search pattern dependent on invoice being of new or old type.
+
+    Parameters
+    ----------
+    new_invoice:
+        True if the invoice is the current edition, false otherwise.
+
+    phrase:
+        Accepts phrases 'fees', 'invoice_period' which are named differently in old/new invoices.
+
+    Returns
+    -------
+        String, representing a keyword to search in text extracted from a PDF file.
+    """
     invoice_keywords = namedtuple("invoice_keywords",("old","new"))
     fees = invoice_keywords("Total","Total fee payable")
     invoice_period = invoice_keywords("Payment for services rendered","Invoice period")
-    phrases = {
+    keywords = {
         "fees":fees,
         "invoice_period":invoice_period
     }
     if new_invoice:
-        return phrases[phrase].new
+        return keywords[phrase].new
     else:
-        return phrases[phrase].old
-print(getProperSearchPattern(False, "invoice_period"))
+        return keywords[phrase].old
+
 
 def extractPattern(PDFtext:str, pattern:str)->str:
     """
-    Extracts specified pattern from PDFtext
+    Extracts specified pattern from PDFtext.
+
+    Parameters
+    ----------
+    PDFtext:
+        text extracted from Deliveroo invoice (filename.PDF)
+
+    pattern:
+        pattern ('Total fees', 'tips') to be extracted from a list of strings, 
+        determined by getProperSearchPattern
+
+    Returns
+    -------
+        String containing the words to extract ('Total fees')
     """
-    # patterns = {
-    #     "Total fees": "Total fee payable",
-    #     "Total":"Total",
-    #     "Tips": "Tips",
-    #     "Bonus": "Total Adjustments",
-    #     "Period": "Invoice period"
-    # }
+    
     is_new = is_new_invoice_type(PDFtext)
     key_phrase = getProperSearchPattern(is_new, pattern)
     PDFtext_list = PDFtext.split('\n')
     total = ""
-    # try:
-    #     search_pattern = patterns[pattern].lower()
-    # except KeyError:
-    #     print(f"Sorry! Only available to extract {patterns.keys()}")
-    #     return None
 
     for entry in PDFtext_list:
-        #print(f'Checking if {key_phrase.lower()} matches {entry.lower()}')
         if key_phrase.lower() in entry.lower():
             total += entry
     return total
@@ -62,7 +91,16 @@ def extractPattern(PDFtext:str, pattern:str)->str:
 
 def format_earned_money(earned_money:str)->float:
     """
-    
+    Strips everything from earned_money besides the number representing money.
+
+    Parameters
+    ----------
+    earned_money:
+        Money earned/deducted.
+
+    Returns
+    -------
+    Float representing money earned.
     """
     currency = '£'
     formated_earned_money = 0.0
@@ -76,7 +114,17 @@ def format_earned_money(earned_money:str)->float:
 
 def is_new_invoice_type(pdf_text:str)->bool:
     """
-    Returns True if new invoice type
+    Determines wheter invoice is of new type and returns True if so, False otherwise.
+
+    Parameters
+    ----------
+    pdf_text:
+        Represent text extracted from a Deliveroo invoice file (.pdf). Layout, column names used are
+        different between two invoices. Old invoice contains keyphrase 'Payment for services rendered', 
+        new invoice states 'Invoice period'. 
+    Returns
+    -------
+        True if invoice is new, false otherwise.
     """
     pattern_for_old_invoice = "Payment for Services Rendered"
     if pattern_for_old_invoice in pdf_text:
@@ -84,17 +132,21 @@ def is_new_invoice_type(pdf_text:str)->bool:
     return True
 
 
-def extractTotalFee(invoice_file)->float:
+def extractTotalFee(invoice_file:str)->float:
     """
-    Extracts total money earned from PDFtext.
+    Extracts total fee earned from a Deliveroo invoice (pdf file). 
+
+    Parameters
+    ----------
+    invoice_file:
+        absolute path to a Deliveroo invoice
+
+    Returns
+    -------
+    Float as fee earned. 
     """
 
     PDFtext = extractTextFromPdf(invoice_file)
-    #new_invoice_type = is_new_invoice_type(PDFtext)
-    #if new_invoice_type:
-        #pattern = "Total fees"
-    #else:
-        #pattern = "Total"
     pattern = "fees"
     extracted_fee = extractPattern(PDFtext, pattern)
     total_fee = format_earned_money(extracted_fee)
@@ -114,4 +166,13 @@ def bulkExtract(folder):
 
 def renameInvoice():
     pass
-print(extractPattern("Some random text,\n Total £164.44","fees"))
+fajls = os.listdir("/Users/deniskusic/Documents/Personal/Deliveroo/Invoices/tax-year_2021")
+run_total = 0.0
+for fajl in fajls:
+    print(f"Extracting from: {fajl}")
+    fee = extractTotalFee(fajl)
+    run_total += fee
+    print(f"  Extracted £{fee}")
+    print(f"  Current total :£{run_total}")
+    print("-"*10)
+print(f"Total earned £{run_total}")
