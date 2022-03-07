@@ -1,6 +1,6 @@
-import sys
 import pdfplumber as pdfP
 import os
+from collections import namedtuple
 
 
 def extractTextFromPdf(filename:str)->str:
@@ -8,44 +8,58 @@ def extractTextFromPdf(filename:str)->str:
     Takes filename and returns the text in that file.
     Filename is of type str, representing the absolute path to file, which is a pdf.
     Returns the entire text from the pdf file; type string
-    page_num of type int, represents the page number of the file to be parsed.
     """
+    text = ''
     try:
-        text = ''
         with pdfP.open(filename) as pdf:
             for page in pdf.pages:
                 text += page.extract_text()
     except FileNotFoundError:
-        print(f'File: {filename} not found')
-        sys.exit(1)
+        raise ValueError(f"File:{filename} does not exist")
     return text
 
+def getProperSearchPattern(new_invoice:bool, phrase:str)->str:
+    invoice_keywords = namedtuple("invoice_keywords",("old","new"))
+    fees = invoice_keywords("Total","Total fee payable")
+    invoice_period = invoice_keywords("Payment for services rendered","Invoice period")
+    phrases = {
+        "fees":fees,
+        "invoice_period":invoice_period
+    }
+    if new_invoice:
+        return phrases[phrase].new
+    else:
+        return phrases[phrase].old
+print(getProperSearchPattern(False, "invoice_period"))
 
-def extractPattern(PDFtext:list, pattern:str = "Total fees")->str:
+def extractPattern(PDFtext:str, pattern:str)->str:
     """
     Extracts specified pattern from PDFtext
     """
-    patterns = {
-        "Total fees": "Total fee payable",
-        "Total":"Total",
-        "Tips": "Tips",
-        "Bonus": "Total Adjustments",
-        "Period": "Invoice period"
-    }
+    # patterns = {
+    #     "Total fees": "Total fee payable",
+    #     "Total":"Total",
+    #     "Tips": "Tips",
+    #     "Bonus": "Total Adjustments",
+    #     "Period": "Invoice period"
+    # }
+    is_new = is_new_invoice_type(PDFtext)
+    key_phrase = getProperSearchPattern(is_new, pattern)
     PDFtext_list = PDFtext.split('\n')
     total = ""
-    try:
-        search_pattern = patterns[pattern].lower()
-    except KeyError:
-        print(f"Sorry! Only available to extract {patterns.keys()}")
-        return None
+    # try:
+    #     search_pattern = patterns[pattern].lower()
+    # except KeyError:
+    #     print(f"Sorry! Only available to extract {patterns.keys()}")
+    #     return None
 
     for entry in PDFtext_list:
-        if search_pattern in entry.lower():
+        #print(f'Checking if {key_phrase.lower()} matches {entry.lower()}')
+        if key_phrase.lower() in entry.lower():
             total += entry
     return total
 
-    # # Format total
+
 def format_earned_money(earned_money:str)->float:
     """
     
@@ -76,14 +90,16 @@ def extractTotalFee(invoice_file)->float:
     """
 
     PDFtext = extractTextFromPdf(invoice_file)
-    new_invoice_type = is_new_invoice_type(PDFtext)
-    if new_invoice_type:
-        pattern = "Total fees"
-    else:
-        pattern = "Total"
+    #new_invoice_type = is_new_invoice_type(PDFtext)
+    #if new_invoice_type:
+        #pattern = "Total fees"
+    #else:
+        #pattern = "Total"
+    pattern = "fees"
     extracted_fee = extractPattern(PDFtext, pattern)
     total_fee = format_earned_money(extracted_fee)
     return total_fee
+
 
 def extractInvoicingPeriod(PDFtext):
     pass
@@ -98,4 +114,4 @@ def bulkExtract(folder):
 
 def renameInvoice():
     pass
-print(extractTotalFee("/Users/deniskusic/Documents/Personal/Deliveroo/testing-dir/file1.pdf"))
+print(extractPattern("Some random text,\n Total £164.44","fees"))
