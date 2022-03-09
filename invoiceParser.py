@@ -39,6 +39,7 @@ def getProperSearchPattern(new_invoice:bool, phrase:str)->str:
     ----------
     new_invoice:
         True if the invoice is the current edition, false otherwise.
+        New invoice from 25/01/2022, old invoice guaranteed from 23/09/2020 until new invoice date.
 
     phrase:
         Accepts phrases 'fees', 'invoice_period' which are named differently in old/new invoices.
@@ -166,13 +167,3 @@ def bulkExtract(folder):
 
 def renameInvoice():
     pass
-fajls = os.listdir("/Users/deniskusic/Documents/Personal/Deliveroo/Invoices/tax-year_2021")
-run_total = 0.0
-for fajl in fajls:
-    print(f"Extracting from: {fajl}")
-    fee = extractTotalFee(fajl)
-    run_total += fee
-    print(f"  Extracted £{fee}")
-    print(f"  Current total :£{run_total}")
-    print("-"*10)
-print(f"Total earned £{run_total}")
