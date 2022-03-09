@@ -14,7 +14,7 @@ def extractTextFromPdf(filename:str)->str:
     Raises
     ------
     ValueError
-        If the filename doesn't not exist or is provided as relative pathname.
+        If the filename doesn't not exist or is not a PDF,or is provided as relative pathname, or filename is a directory.
 
     Returns
     -------
@@ -28,6 +28,10 @@ def extractTextFromPdf(filename:str)->str:
                 text += page.extract_text()
     except FileNotFoundError:
         raise ValueError(f"File:{filename} does not exist")
+    except pdfP.pdfminer.pdfparser.PDFSyntaxError:
+        raise ValueError(f"File:{filename} is not a PDF file.")
+    except IsADirectoryError:
+        raise ValueError(f"File:{filename} is a directory.")
     return text
 
 
@@ -109,7 +113,11 @@ def format_earned_money(earned_money:str)->float:
     for num, char in enumerate(earned_money):
         if char == currency:
             start_indx = num + 1
-    formated_earned_money = float(earned_money[start_indx:])
+    # if empty string is to arise - it should not
+    try:
+        formated_earned_money = float(earned_money[start_indx:])
+    except ValueError:
+        return formated_earned_money
     return formated_earned_money
     
 
@@ -146,8 +154,11 @@ def extractTotalFee(invoice_file:str)->float:
     -------
     Float as fee earned. 
     """
-
-    PDFtext = extractTextFromPdf(invoice_file)
+    total_fee = 0.0
+    try:
+        PDFtext = extractTextFromPdf(invoice_file)
+    except ValueError:
+        return total_fee
     pattern = "fees"
     extracted_fee = extractPattern(PDFtext, pattern)
     total_fee = format_earned_money(extracted_fee)

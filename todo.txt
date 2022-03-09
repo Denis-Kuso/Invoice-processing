@@ -5,3 +5,8 @@ Sat 12 Feb 2022 09:59:15 GMT
 
 
 Fri  4 Mar 2022 23:39:38 GMT
+On branch changing-src-and-dst:
+-Write function specifications
+-Consider breaking down extractPattern into two funcstions, one that extracts search
+-pattern to be used from a keyword
+

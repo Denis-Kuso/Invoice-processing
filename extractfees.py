@@ -2,9 +2,10 @@
 Long description of what this script does.
 
 Contains the following functions:
-    * function1 - bla bla bla
+    * function1 - bla bla bla (TO ADD)
     * main - main function of the script, extracts fees earned from every file in the folder provided
-      and adds them up printing total money earned from the invoice files in folder specified.
+      and adds them up, printing total money earned from the invoice files in folder specified. It flag -p provided, it will 
+      print out fees and filename from each invoice as well.
 """
 import argparse
 import os
@@ -15,9 +16,9 @@ import invoiceParser as invPar
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        'src',
+        'source_dir',
         type=str,
-        help="Folder containing Deliveroo invoice files."
+        help="Folder containing Deliveroo invoice files. Can be relative to script location or absolute path."
     )
     parser.add_argument(
         '-p',
@@ -27,15 +28,21 @@ def main():
     )
     args = parser.parse_args()
     total = 0.0
-    files = os.listdir(args.src)
+    try:
+        files = os.listdir(args.source_dir)
+    except FileNotFoundError:
+        print(f"No such file or directory: '{args.source_dir}'")
+        sys.exit(1)
+
     for file in files:
-        invoice = args.src + file
+        invoice = args.source_dir + '/' + file
         fee = invPar.extractTotalFee(invoice)
         total += fee
-        if args.prints:
+        if args.print:
             print(f"Extracting from: {invoice}")
-            print(f"* extracted {fee}, total = {total}")
-    print(f"Total extracted: {total}")
+            print(f" extracted £{fee}, total = £{total}")
+    print(f"Total extracted: £{total}")
+
 
 if __name__ == '__main__':
     main()
