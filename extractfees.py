@@ -1,11 +1,11 @@
 """
-Long description of what this script does.
+Extract fees from all Deliveroo invoices.
+
 
 Contains the following functions:
-    * function1 - bla bla bla (TO ADD)
-    * main - main function of the script, extracts fees earned from every file in the folder provided
-      and adds them up, printing total money earned from the invoice files in folder specified. It flag -p provided, it will 
-      print out fees and filename from each invoice as well.
+    * main - main function of the script, extracts earned fees from every file in the folder provided
+      and adds them up. Prints the final sum combined from all invoices. If flag '-p' provided, it will 
+      print out invoice name and fee extracted from it.
 """
 import argparse
 import os
