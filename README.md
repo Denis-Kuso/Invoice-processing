@@ -1,4 +1,4 @@
-# Deliveroo 
+# Deliveroo invoice exctractor
 > A script that extracts total money earned from a number of invoice files issued by Deliveroo
 
 ## Table of Contents
@@ -30,7 +30,7 @@ One could just type
 >python3 extractfees
 ```
 and would receive feedback on the optional/positional arguments and the usage.
-![](.images/feedback-on-usage.png)
+![](images/feedback-on-usage.png)
 
 Thus, the following is the proper basic usage, where `<name_of_source_dir>` contains the invoice files.
 ```{bash}
@@ -38,7 +38,7 @@ Thus, the following is the proper basic usage, where `<name_of_source_dir>` cont
 ```
 The output will then look like this:
 
-![](.images/feedback-on-output.png)
+![](images/feedback-on-output.png)
 
 
 Using the optional `-p` or the verbose option `--print` the user would get each filename and the fee extracted from it displayed, as opposed to just the final sum.
