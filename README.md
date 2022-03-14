@@ -14,12 +14,12 @@
 ## General Information
 
 Delivery couriers are considered self-employed and thus need to report their earnings.
-However, how much they earn is sent to them on a weekly basis in invoice files. Hence, there is a task involved ,that basically repeats itself, either each week or more likely, when "doing your taxes" is due.
+However, how much they earn is sent to them on a weekly basis in invoice files. Hence, there is a task involved, that basically repeats itself, either each week or more likely, when "doing your taxes" is due.
 Hence, this script:
 
 - Automates the process of opening each invoice and summing up all the earnings
 - Reduces chances of typing errors when transfering data or calculating on the fly
-- Drastically reduces time taken to get total money earned (normal rider would have $\ge$ 52 files to open)
+- Drastically reduces time taken to get total money earned (normal rider would have $\geqslant$ 52 files to open)
 
 ## Usage
 
