@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-import invoiceParser
+import extractor.invoiceParser as invPar
 
 class TestInvoiceParser(TestCase):
 
@@ -11,9 +11,9 @@ class TestInvoiceParser(TestCase):
     def testExtractTextFromPdf(self):
         good_file = self.wdir + "file1.pdf"
         bogus_file = "InexistentFile.pdf"
-        good_file = invoiceParser.extractTextFromPdf(good_file)
+        good_file = invPar.extractTextFromPdf(good_file)
         self.assertIsInstance(good_file,str)
-        self.assertRaises(ValueError,invoiceParser.extractTextFromPdf,bogus_file)
+        self.assertRaises(ValueError,invPar.extractTextFromPdf,bogus_file)
 
 
     def testExtractPattern(self):
@@ -35,7 +35,7 @@ class TestInvoiceParser(TestCase):
             24.56
         ]
         for case,expected in zip(good_cases,exp_cases):
-            outcome = invoiceParser.format_earned_money(case)
+            outcome = invPar.format_earned_money(case)
             self.assertIsInstance(outcome,float)
             self.assertAlmostEqual(expected, outcome, places = 4)
     
@@ -43,8 +43,8 @@ class TestInvoiceParser(TestCase):
     def testIsNewInvoiceType(self):
         pattern_for_old = "Payment for Services Rendered"
         any_string = "Any string"
-        self.assertTrue(invoiceParser.is_new_invoice_type(any_string))
-        self.assertFalse(invoiceParser.is_new_invoice_type(pattern_for_old))
+        self.assertTrue(invPar.is_new_invoice_type(any_string))
+        self.assertFalse(invPar.is_new_invoice_type(pattern_for_old))
         
 
     def testExtractTotalFee(self):
@@ -59,7 +59,7 @@ class TestInvoiceParser(TestCase):
 
         for file in files:
             print(f"Testing file {wdir + file}")
-            fee = invoiceParser.extractTotalFee(wdir + file)
+            fee = invPar.extractTotalFee(wdir + file)
             print(f"Completed and extracted {fee}")
             self.assertAlmostEqual(fee, files[file],places = 4)
             

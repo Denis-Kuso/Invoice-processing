@@ -1,4 +1,4 @@
-# Deliveroo 
+# Deliveroo invoice exctractor
 > A script that extracts total money earned from a number of invoice files issued by Deliveroo
 
 ## Table of Contents
@@ -14,12 +14,12 @@
 ## General Information
 
 Delivery couriers are considered self-employed and thus need to report their earnings.
-However, how much they earn is sent to them on a weekly basis in invoice files. Hence, there is a task involved ,that basically repeats itself, either each week or more likely, when "doing your taxes" is due.
+However, how much they earn is sent to them on a weekly basis in invoice files. Hence, there is a task involved, that basically repeats itself, either each week or more likely, when "doing your taxes" is due.
 Hence, this script:
 
 - Automates the process of opening each invoice and summing up all the earnings
 - Reduces chances of typing errors when transfering data or calculating on the fly
-- Drastically reduces time taken to get total money earned (normal rider would have $\ge$ 52 files to open)
+- Drastically reduces time taken to get total money earned (normal rider would have $\geqslant$ 52 files to open)
 
 ## Usage
 
@@ -30,7 +30,7 @@ One could just type
 >python3 extractfees
 ```
 and would receive feedback on the optional/positional arguments and the usage.
-![](./feedback-on-usage.png)
+![](images/feedback-on-usage.png)
 
 Thus, the following is the proper basic usage, where `<name_of_source_dir>` contains the invoice files.
 ```{bash}
@@ -38,7 +38,7 @@ Thus, the following is the proper basic usage, where `<name_of_source_dir>` cont
 ```
 The output will then look like this:
 
-![](./feedback-on-output.png)
+![](images/feedback-on-output.png)
 
 
 Using the optional `-p` or the verbose option `--print` the user would get each filename and the fee extracted from it displayed, as opposed to just the final sum.
