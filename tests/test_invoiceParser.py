@@ -7,7 +7,6 @@ class TestInvoiceParser(TestCase):
     testing_dir = wdir + '/data/testing/invoice-samples/'
     def setUp(self):
         print("Setting up")
-        #self.wdir = "/Users/deniskusic/Documents/Personal/Deliveroo/testing-dir/"
         
     
     def testExtractTextFromPdf(self):
@@ -51,7 +50,6 @@ class TestInvoiceParser(TestCase):
 
     def testExtractTotalFee(self):
         # input files
-        #wdir = "/Users/deniskusic/Documents/Personal/Deliveroo/testing-dir/"
         expected_fees = (250.64, 164.44, 58.60, 107.58,41.53,)
         files = {}
         file_template_name = "file"
