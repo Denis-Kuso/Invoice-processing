@@ -1,15 +1,17 @@
 from unittest import TestCase, main
+from os import getcwd,chdir
 import extractor.invoiceParser as invPar
 
 class TestInvoiceParser(TestCase):
-
+    wdir = getcwd()
+    testing_dir = wdir + '/data/testing/invoice-samples/'
     def setUp(self):
         print("Setting up")
-        self.wdir = "/Users/deniskusic/Documents/Personal/Deliveroo/testing-dir/"
+        #self.wdir = "/Users/deniskusic/Documents/Personal/Deliveroo/testing-dir/"
         
     
     def testExtractTextFromPdf(self):
-        good_file = self.wdir + "file1.pdf"
+        good_file = self.testing_dir + "file1.pdf"
         bogus_file = "InexistentFile.pdf"
         good_file = invPar.extractTextFromPdf(good_file)
         self.assertIsInstance(good_file,str)
@@ -49,7 +51,7 @@ class TestInvoiceParser(TestCase):
 
     def testExtractTotalFee(self):
         # input files
-        wdir = "/Users/deniskusic/Documents/Personal/Deliveroo/testing-dir/"
+        #wdir = "/Users/deniskusic/Documents/Personal/Deliveroo/testing-dir/"
         expected_fees = (250.64, 164.44, 58.60, 107.58,41.53,)
         files = {}
         file_template_name = "file"
@@ -58,8 +60,8 @@ class TestInvoiceParser(TestCase):
             files[filename] = exp_fee
 
         for file in files:
-            print(f"Testing file {wdir + file}")
-            fee = invPar.extractTotalFee(wdir + file)
+            print(f"Testing file {self.testing_dir + file}")
+            fee = invPar.extractTotalFee(self.testing_dir + file)
             print(f"Completed and extracted {fee}")
             self.assertAlmostEqual(fee, files[file],places = 4)
             
