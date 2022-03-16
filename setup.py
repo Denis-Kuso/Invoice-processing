@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name="",
+setup(name="Deliveroo fee extractor",
     version="0.1",
     description="Extracts fees from Deliveroo scripts",
     author="Denis Kusic",
