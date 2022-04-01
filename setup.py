@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(name="Deliveroo fee extractor",
     version="0.1",
-    description="Extracts fees from Deliveroo scripts",
+    description="Extracts fees from Deliveroo invoices",
     author="Denis Kusic",
     author_email="kuso.cm@gmail.com",
     licence='GPL',
